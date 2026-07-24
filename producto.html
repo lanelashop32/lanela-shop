@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Producto — Lanela Shop</title>
+<script src="cart.js" defer></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white:#FFFFFF; --ivory:#FCFAF7; --beige:#D8B8C3; --gray:#FCFAF7;
+    --black:#373330; --rose:#F7ECEF; --burgundy:#D8B8C3; --price:#8B6F63;
+    --crema:#F5F0EA; --taupe:#AE9D8D; --mocha:#8B6F63; --terracota:#B77B6C;
+  }
+  html{ scroll-behavior:smooth; }
+  body{ background:var(--ivory); color:var(--black); font-family:'Inter',sans-serif; }
+  .display{ font-family:'Playfair Display', serif; }
+  .btn-dark{ background:var(--mocha); color:#fff; transition:transform .2s ease, background .2s ease; }
+  .btn-dark:hover{ transform:translateY(-2px); background:var(--taupe); }
+  .btn-outline{ border:1px solid var(--burgundy); color:var(--mocha); transition:background .2s ease, color .2s ease; }
+  .btn-outline:hover{ background:var(--burgundy); color:var(--black); }
+  .price{ color:var(--price); }
+  .swatch{ width:22px; height:22px; border-radius:9999px; border:1px solid rgba(0,0,0,.15); cursor:pointer; }
+  .swatch.active{ outline:2px solid var(--mocha); outline-offset:2px; }
+  .thumb{ border:1px solid transparent; cursor:pointer; }
+  .thumb.active{ border-color:var(--mocha); }
+  input:focus, textarea:focus, button:focus-visible, a:focus-visible{ outline:2px solid var(--mocha); outline-offset:2px; }
+  ::-webkit-scrollbar{ width:8px; } ::-webkit-scrollbar-thumb{ background:var(--beige); border-radius:9999px; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- NAV -->
+<header class="sticky top-0 z-50 bg-[var(--ivory)]/95 backdrop-blur border-b border-black/5">
+  <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+    <a href="index.html"><img src="images/logo.png" alt="Lanela Shop" class="h-8 w-auto"></a>
+    <div class="flex items-center gap-5">
+      <a href="index.html#coleccion" class="btn-outline rounded-full px-5 py-2 text-xs uppercase tracking-wide hidden sm:inline-block">Ver colección</a>
+      <a href="carrito.html" aria-label="Carrito" class="relative inline-block">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6l-1-3H2"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+        <span id="cart-count" class="absolute -top-2 -right-2 bg-[var(--burgundy)] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-6xl mx-auto px-6 pt-6 text-xs text-black/50">
+  <a href="index.html" class="hover:text-[var(--mocha)]">Inicio</a> /
+  <a href="index.html#coleccion" class="hover:text-[var(--mocha)]">Colección</a> /
+  <span id="crumb-name"></span>
+</div>
+
+<!-- PRODUCTO -->
+<main class="max-w-6xl mx-auto px-6 py-10">
+  <div id="product-root" class="grid md:grid-cols-2 gap-12">
+    <!-- se llena con JS -->
+  </div>
+
+  <!-- info adicional -->
+  <div class="max-w-2xl mx-auto md:mx-0 mt-16 border-t border-black/10 pt-8 text-sm text-black/65 space-y-2">
+    <p>✓ Polilicra premium · Doble tela</p>
+    <p>✓ No transparenta · Ajuste cómodo</p>
+    <p>✓ Envíos a todo Colombia</p>
+    <p>✓ Bogotá: contraentrega $9.000 · Nacional: pago anticipado Nequi o Daviplata</p>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="px-6 py-10 bg-[var(--crema)] border-t border-black/5 text-center text-xs text-black/50">
+  <p>© 2026 Lanela Shop. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+const PRODUCTS = [{"id": "crop-top", "name": "Crop Top", "price": "35.000", "cat": "Blusas y busos", "colors": [{"name": "Negro", "hex": "#1B1B1B", "img": "images/crop-top-negro.jpg"}, {"name": "Blanco", "hex": "#FFFFFF", "img": "images/crop-top-blanco.jpg"}, {"name": "Café", "hex": "#6F4E37", "img": "images/crop-top-cafe.jpg"}, {"name": "Marfil", "hex": "#EDE6DA", "img": "images/crop-top-marfil.jpg"}, {"name": "Vinotinto", "hex": "#6E2439", "img": "images/crop-top-vinotinto.jpg"}], "img1": "images/crop-top-negro.jpg", "img2": "images/crop-top-2.jpg", "desc": "Crop top de tiro corto en polilicra doble tela, de ajuste ceñido al cuerpo. Ideal como básico para combinar con jeans o faldas de tiro alto."}, {"id": "buso-tortuga", "name": "Buso Tortuga", "price": "40.000", "cat": "Blusas y busos", "colors": [{"name": "Blanco", "hex": "#FFFFFF", "img": "images/buso-tortuga-blanco.jpg"}, {"name": "Café", "hex": "#6F4E37", "img": "images/buso-tortuga-cafe.jpg"}, {"name": "Marfil", "hex": "#EDE6DA", "img": "images/buso-tortuga-marfil.jpg"}, {"name": "Azul bebé", "hex": "#AFC9E0", "img": "images/buso-tortuga-azul-bebe.jpg"}, {"name": "Vinotinto", "hex": "#6E2439", "img": "images/buso-tortuga-vinotinto.jpg"}], "img1": "images/buso-tortuga-blanco.jpg", "img2": "images/buso-tortuga-2.jpg", "desc": "Buso cuello tortuga de manga larga en polilicra doble tela, con ajuste entallado. Perfecto para looks de clima frío sin perder silueta."}, {"id": "buso-sol", "name": "Buso Sol", "price": "40.000", "cat": "Blusas y busos", "colors": [{"name": "Negro", "hex": "#1B1B1B", "img": "images/buso-sol-negro.jpg"}, {"name": "Marfil", "hex": "#EDE6DA", "img": "images/buso-sol-marfil.jpg"}, {"name": "Blanco", "hex": "#FFFFFF", "img": "images/buso-sol-blanco.jpg"}, {"name": "Beige", "hex": "#E9E2D8", "img": "images/buso-sol-beige.jpg"}, {"name": "Esmeralda", "hex": "#2E8B67", "img": "images/buso-sol-esmeralda.jpg"}, {"name": "Café", "hex": "#6F4E37", "img": "images/buso-sol-cafe.jpg"}, {"name": "Rosado", "hex": "#E7A9BC", "img": "images/buso-sol-rosado.jpg"}], "img1": "images/buso-sol-negro.jpg", "img2": "images/buso-sol-2.jpg", "desc": "Buso de manga larga en polilicra doble tela, corte entallado y cómodo para uso diario."}, {"id": "blusa-luz", "name": "Blusa Luz", "price": "35.000", "cat": "Blusas y busos", "colors": [{"name": "Marfil", "hex": "#EDE6DA", "img": "images/blusa-luz-marfil.jpg"}, {"name": "Negro", "hex": "#1B1B1B", "img": "images/blusa-luz-negro.jpg"}, {"name": "Blanco", "hex": "#FFFFFF", "img": "images/blusa-luz-blanco.jpg"}, {"name": "Café", "hex": "#6F4E37", "img": "images/blusa-luz-cafe.jpg"}, {"name": "Beige", "hex": "#E9E2D8", "img": "images/blusa-luz-beige.jpg"}, {"name": "Esmeralda", "hex": "#2E8B67", "img": "images/blusa-luz-esmeralda.jpg"}], "img1": "images/blusa-luz-marfil.jpg", "img2": "images/blusa-luz-2.jpg", "desc": "Blusa básica de manga corta en polilicra doble tela, corte sencillo y versátil para el día a día."}, {"id": "blusa-asimetrica", "name": "Blusa Asimétrica", "price": "40.000", "cat": "Blusas y busos", "colors": [{"name": "Amarillo", "hex": "#E8C547", "img": "images/blusa-asimetrica-amarillo.jpg"}, {"name": "Negro", "hex": "#1B1B1B", "img": "images/blusa-asimetrica-negro.jpg"}, {"name": "Verde esmeralda", "hex": "#2E8B67", "img": "images/blusa-asimetrica-verde-esmeralda.jpg"}, {"name": "Azul petróleo", "hex": "#1F5C63", "img": "images/blusa-asimetrica-azul-petroleo.jpg"}, {"name": "Blanco", "hex": "#FFFFFF", "img": "images/blusa-asimetrica-blanco.jpg"}, {"name": "Cocoa", "hex": "#7B4B32", "img": "images/blusa-asimetrica-cocoa.jpg"}], "img1": "images/blusa-asimetrica-amarillo.jpg", "img2": "images/blusa-asimetrica-2.jpg", "desc": "Blusa de un solo hombro con manga larga, corte asimétrico en polilicra doble tela. Una pieza statement para looks de noche o salidas especiales."}, {"id": "rib-benji", "name": "Rib Benji", "price": "40.000", "cat": "Blusas y busos", "colors": [{"name": "Lila", "hex": "#C9B6DE", "img": "images/rib-benji-lila.jpg"}, {"name": "Blanco", "hex": "#FFFFFF", "img": "images/rib-benji-blanco.jpg"}, {"name": "Caqui", "hex": "#A9A17E", "img": "images/rib-benji-caqui.jpg"}, {"name": "Azul", "hex": "#3E6B99", "img": "images/rib-benji-azul.jpg"}, {"name": "Negro", "hex": "#1B1B1B", "img": "images/rib-benji-negro.jpg"}, {"name": "Rosada", "hex": "#E7A9BC", "img": "images/rib-benji-rosada.jpg"}], "img1": "images/rib-benji-lila.jpg", "img2": "images/rib-benji-2.jpg", "desc": "Blusa cuello en V de manga corta en tela rib acanalada, ajuste entallado y fresco."}, {"id": "rib-frida", "name": "Rib Frida", "price": "40.000", "cat": "Blusas y busos", "colors": [{"name": "Lila", "hex": "#C9B6DE", "img": "images/rib-frida-lila.jpg"}, {"name": "Blanco", "hex": "#FFFFFF", "img": "images/rib-frida-blanco.jpg"}, {"name": "Caqui", "hex": "#A9A17E", "img": "images/rib-frida-caqui.jpg"}, {"name": "Azul", "hex": "#3E6B99", "img": "images/rib-frida-azul.jpg"}, {"name": "Negro", "hex": "#1B1B1B", "img": "images/rib-frida-negro.jpg"}, {"name": "Rosada", "hex": "#E7A9BC", "img": "images/rib-frida-rosada.jpg"}], "img1": "images/rib-frida-lila.jpg", "img2": "images/rib-frida-2.jpg", "desc": "Blusa cuello redondo de manga corta en tela rib acanalada, básica y fácil de combinar."}, {"id": "blusa-rib", "name": "Blusa Rib", "price": "35.000", "cat": "Blusas y busos", "colors": [{"name": "Lila", "hex": "#C9B6DE", "img": "images/blusa-rib-lila.jpg"}, {"name": "Verde militar", "hex": "#5B6B3B", "img": "images/blusa-rib-verde-militar.jpg"}, {"name": "Amarillo", "hex": "#E8C547", "img": "images/blusa-rib-amarillo.jpg"}, {"name": "Azul", "hex": "#3E6B99", "img": "images/blusa-rib-azul.jpg"}, {"name": "Caqui", "hex": "#A9A17E", "img": "images/blusa-rib-caqui.jpg"}, {"name": "Rosada", "hex": "#E7A9BC", "img": "images/blusa-rib-rosada.jpg"}], "img1": "images/blusa-rib-lila.jpg", "img2": "images/blusa-rib-2.jpg", "desc": "Blusa en tela rib de manga corta, corte sencillo ideal para uso diario."}, {"id": "rib-polo", "name": "Rib Polo", "price": "40.000", "cat": "Blusas y busos", "colors": [{"name": "Negro", "hex": "#1B1B1B", "img": "images/rib-polo-negro.jpg"}, {"name": "Café claro", "hex": "#A67B5B", "img": "images/rib-polo-cafe-claro.jpg"}, {"name": "Café oscuro", "hex": "#4A2E1F", "img": "images/rib-polo-cafe-oscuro.jpg"}], "img1": "images/rib-polo-negro.jpg", "img2": "images/rib-polo-2.jpg", "desc": "Blusa tipo polo en tela rib, con cuello y ajuste entallado."}, {"id": "blusa-malla", "name": "Blusa Malla", "price": "30.000", "cat": "Blusas y busos", "colors": [{"name": "Blanco", "hex": "#FFFFFF", "img": "images/blusa-malla-blanco.jpg"}, {"name": "Beige", "hex": "#E9E2D8", "img": "images/blusa-malla-beige.jpg"}], "img1": "images/blusa-malla-blanco.jpg", "img2": "images/blusa-malla-2.jpg", "desc": "Blusa en malla premium de manga larga, tela semitransparente ideal para superponer sobre básicos."}, {"id": "body-flor", "name": "Body Flor", "price": "55.000", "cat": "Bodys", "colors": [{"name": "Blanco", "hex": "#FFFFFF", "img": "images/body-flor-blanco.jpg"}, {"name": "Esmeralda", "hex": "#2E8B67", "img": "images/body-flor-esmeralda.jpg"}, {"name": "Rosado", "hex": "#E7A9BC", "img": "images/body-flor-rosado.jpg"}, {"name": "Negro", "hex": "#1B1B1B", "img": "images/body-flor-negro.jpg"}, {"name": "Amarillo", "hex": "#E8C547", "img": "images/body-flor-amarillo.jpg"}], "img1": "images/body-flor-blanco.jpg", "img2": "images/body-flor-2.jpg", "desc": "Body de tirantes en polilicra, ajuste ceñido a la figura. Talla SM."}, {"id": "body-francia", "name": "Body Francia", "price": "55.000", "cat": "Bodys", "colors": [{"name": "Café", "hex": "#6F4E37", "img": "images/body-francia-cafe.jpg"}, {"name": "Rosado", "hex": "#E7A9BC", "img": "images/body-francia-rosado.jpg"}, {"name": "Beige", "hex": "#E9E2D8", "img": "images/body-francia-beige.jpg"}, {"name": "Blanco", "hex": "#FFFFFF", "img": "images/body-francia-blanco.jpg"}, {"name": "Esmeralda", "hex": "#2E8B67", "img": "images/body-francia-esmeralda.jpg"}, {"name": "Negro", "hex": "#1B1B1B", "img": "images/body-francia-negro.jpg"}, {"name": "Amarillo", "hex": "#E8C547", "img": "images/body-francia-amarillo.jpg"}], "img1": "images/body-francia-cafe.jpg", "img2": "images/body-francia-2.jpg", "desc": "Body de manga corta en polilicra doble tela, con ajuste que estiliza la silueta."}, {"id": "body-lupe", "name": "Body Lupe", "price": "55.000", "cat": "Bodys", "colors": [{"name": "Café", "hex": "#6F4E37", "img": "images/body-lupe-cafe.jpg"}, {"name": "Azul oscuro", "hex": "#22405E", "img": "images/body-lupe-azul-oscuro.jpg"}, {"name": "Negro", "hex": "#1B1B1B", "img": "images/body-lupe-negro.jpg"}, {"name": "Amarillo", "hex": "#E8C547", "img": "images/body-lupe-amarillo.jpg"}], "img1": "images/body-lupe-cafe.jpg", "img2": "images/body-lupe-2.jpg", "desc": "Body de manga corta cuello redondo en polilicra doble tela, básico y versátil."}, {"id": "body-canelo", "name": "Body Canelo", "price": "55.000", "cat": "Bodys", "colors": [{"name": "Esmeralda", "hex": "#2E8B67", "img": "images/body-canelo-esmeralda.jpg"}, {"name": "Rojo", "hex": "#B23B3B", "img": "images/body-canelo-rojo.jpg"}, {"name": "Amarillo", "hex": "#E8C547", "img": "images/body-canelo-amarillo.jpg"}, {"name": "Marfil", "hex": "#EDE6DA", "img": "images/body-canelo-marfil.jpg"}, {"name": "Blanco", "hex": "#FFFFFF", "img": "images/body-canelo-blanco.jpg"}, {"name": "Cocoa", "hex": "#7B4B32", "img": "images/body-canelo-cocoa.jpg"}], "img1": "images/body-canelo-esmeralda.jpg", "img2": "images/body-canelo-2.jpg", "desc": "Body en polilicra doble tela, corte entallado. Talla SM."}, {"id": "body-luna", "name": "Body Luna", "price": "55.000", "cat": "Bodys", "colors": [{"name": "Café", "hex": "#6F4E37", "img": "images/body-luna-cafe.jpg"}, {"name": "Rosado", "hex": "#E7A9BC", "img": "images/body-luna-rosado.jpg"}, {"name": "Beige", "hex": "#E9E2D8", "img": "images/body-luna-beige.jpg"}], "img1": "images/body-luna-cafe.jpg", "img2": "images/body-luna-2.jpg", "desc": "Body en polilicra doble tela, ajuste ceñido. Talla LXL."}, {"id": "body-andrea", "name": "Body Andrea", "price": "50.000", "cat": "Bodys", "colors": [{"name": "Beige", "hex": "#E9E2D8", "img": "images/body-andrea-beige.jpg"}, {"name": "Rosado", "hex": "#E7A9BC", "img": "images/body-andrea-rosado.jpg"}, {"name": "Blanco", "hex": "#FFFFFF", "img": "images/body-andrea-blanco.jpg"}], "img1": "images/body-andrea-beige.jpg", "img2": "images/body-andrea-2.jpg", "desc": "Body en polilicra doble tela, ajuste ceñido. Talla ML."}];
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get('id');
+const product = PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
+
+document.title = product.name + ' — Lanela Shop';
+document.getElementById('crumb-name').textContent = product.name;
+
+let selectedColor = product.colors[0].name;
+let selectedSize = 'SM';
+let currentImg = product.img1;
+
+function render(){
+  const root = document.getElementById('product-root');
+  root.innerHTML = `
+    <div>
+      <div class="aspect-[3/4] rounded-xl overflow-hidden bg-[var(--gray)] mb-3 shadow-[0_8px_28px_-14px_rgba(139,111,99,.35)]">
+        <img id="main-img" src="${currentImg}" class="w-full h-full object-cover">
+      </div>
+      <div id="thumb-row" class="flex gap-2 flex-wrap"></div>
+    </div>
+    <div>
+      <p class="uppercase tracking-[0.2em] text-xs text-[var(--mocha)] mb-3">${product.cat}</p>
+      <h1 class="display text-4xl mb-3">${product.name}</h1>
+      <p class="price text-2xl font-medium mb-6">$ ${product.price}</p>
+      <p class="text-sm text-black/65 mb-6 leading-relaxed">${product.desc}</p>
+
+      <p class="text-sm font-medium mb-2">Color: <span id="color-label">${selectedColor}</span></p>
+      <div id="color-swatches" class="flex items-center gap-2 flex-wrap mb-6"></div>
+
+      <p class="text-sm font-medium mb-2">Talla</p>
+      <div id="size-buttons" class="flex gap-2 mb-8"></div>
+
+      <div class="flex flex-col sm:flex-row gap-3 mb-4">
+        <button id="add-cart-btn" class="btn-dark rounded-full px-8 py-3.5 text-sm uppercase tracking-wide">Agregar al carrito</button>
+        <a id="whatsapp-btn" class="btn-outline rounded-full px-8 py-3.5 text-sm uppercase tracking-wide text-center" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+      </div>
+      <p id="add-status" class="text-xs text-[var(--mocha)] hidden">Agregado al carrito ✓</p>
+    </div>
+  `;
+
+  function selectColor(c){
+    selectedColor = c.name;
+    document.getElementById('color-label').textContent = c.name;
+    document.getElementById('main-img').src = c.img;
+    document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.name === c.name));
+    document.querySelectorAll('.thumb').forEach(t => t.classList.toggle('active', t.dataset.name === c.name));
+    updateWhatsapp();
+  }
+
+  // swatches
+  const swatchWrap = document.getElementById('color-swatches');
+  product.colors.forEach((c, i) => {
+    const el = document.createElement('span');
+    el.className = 'swatch' + (i === 0 ? ' active' : '');
+    el.style.background = c.hex;
+    el.title = c.name;
+    el.dataset.name = c.name;
+    el.addEventListener('click', () => selectColor(c));
+    swatchWrap.appendChild(el);
+  });
+
+  // miniaturas: una foto real por cada color
+  const thumbRow = document.getElementById('thumb-row');
+  product.colors.forEach((c, i) => {
+    const t = document.createElement('img');
+    t.src = c.img;
+    t.dataset.name = c.name;
+    t.title = c.name;
+    t.className = 'thumb' + (i === 0 ? ' active' : '') + ' w-16 h-20 object-cover rounded-lg';
+    t.addEventListener('click', () => selectColor(c));
+    thumbRow.appendChild(t);
+  });
+
+  // sizes
+  const sizeWrap = document.getElementById('size-buttons');
+  ['SM','LXL'].forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = s;
+    btn.className = 'rounded-full px-5 py-2 text-xs uppercase border ' + (i === 0 ? 'btn-dark border-transparent' : 'btn-outline');
+    btn.addEventListener('click', () => {
+      selectedSize = s;
+      sizeWrap.querySelectorAll('button').forEach(b => b.className = 'rounded-full px-5 py-2 text-xs uppercase border btn-outline');
+      btn.className = 'rounded-full px-5 py-2 text-xs uppercase border btn-dark border-transparent';
+      updateWhatsapp();
+    });
+    sizeWrap.appendChild(btn);
+  });
+
+  // add to cart (real)
+  document.getElementById('add-cart-btn').addEventListener('click', () => {
+    const selectedImg = product.colors.find(c => c.name === selectedColor)?.img || product.img1;
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: parseInt(product.price.replace(/\./g, ''), 10),
+      color: selectedColor,
+      size: selectedSize,
+      img: selectedImg
+    });
+    const status = document.getElementById('add-status');
+    status.textContent = `Agregado: ${product.name} · ${selectedColor} · ${selectedSize}`;
+    status.classList.remove('hidden');
+  });
+
+  updateWhatsapp();
+}
+
+function updateWhatsapp(){
+  const msg = encodeURIComponent(`Hola, quiero pedir ${product.name} en color ${selectedColor}, talla ${selectedSize}.`);
+  document.getElementById('whatsapp-btn').href = `https://wa.me/573123634109?text=${msg}`;
+}
+
+render();
+</script>
+
+</body>
+</html>

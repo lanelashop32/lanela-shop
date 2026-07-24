@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finalizar pedido — Lanela Shop</title>
+<script src="cart.js" defer></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white:#FFFFFF; --ivory:#FCFAF7; --beige:#D8B8C3; --gray:#FCFAF7;
+    --black:#373330; --rose:#F7ECEF; --burgundy:#D8B8C3; --price:#8B6F63;
+    --crema:#F5F0EA; --taupe:#AE9D8D; --mocha:#8B6F63; --terracota:#B77B6C;
+  }
+  body{ background:var(--ivory); color:var(--black); font-family:'Inter',sans-serif; }
+  .display{ font-family:'Playfair Display', serif; }
+  .btn-dark{ background:var(--mocha); color:#fff; transition:transform .2s ease, background .2s ease; }
+  .btn-dark:hover{ transform:translateY(-2px); background:var(--taupe); }
+  .btn-dark:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+  .btn-outline{ border:1px solid var(--burgundy); color:var(--mocha); }
+  .field{ border:1px solid rgba(0,0,0,.15); border-radius:.6rem; padding:.7rem 1rem; font-size:.9rem; width:100%; background:#fff; }
+  .field:focus{ outline:2px solid var(--mocha); outline-offset:1px; }
+  .pay-option{ border:1px solid rgba(0,0,0,.15); border-radius:.75rem; padding:1rem; cursor:pointer; transition:border-color .2s ease, background .2s ease; }
+  .pay-option.active{ border-color:var(--mocha); background:var(--rose); }
+</style>
+</head>
+<body class="antialiased">
+
+<header class="sticky top-0 z-50 bg-[var(--ivory)]/95 backdrop-blur border-b border-black/5">
+  <div class="max-w-4xl mx-auto px-6 h-20 flex items-center justify-between">
+    <a href="index.html"><img src="images/logo.png" alt="Lanela Shop" class="h-8 w-auto"></a>
+    <a href="carrito.html" class="btn-outline rounded-full px-5 py-2 text-xs uppercase tracking-wide">Volver al carrito</a>
+  </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-6 py-12">
+  <h1 class="display text-3xl mb-8">Finalizar pedido</h1>
+
+  <div id="empty-state" class="hidden text-center py-16">
+    <p class="text-black/60 mb-6">Tu carrito está vacío.</p>
+    <a href="index.html#coleccion" class="btn-dark rounded-full px-8 py-3.5 text-sm uppercase tracking-wide inline-block">Ver colección</a>
+  </div>
+
+  <div id="checkout-content">
+    <!-- resumen -->
+    <div id="order-summary" class="bg-white rounded-xl p-6 mb-8 shadow-[0_8px_28px_-14px_rgba(139,111,99,.25)]"></div>
+
+    <form id="shipping-form" class="space-y-5">
+      <h2 class="display text-xl mb-1">Datos de envío</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium mb-1.5">Nombre completo *</label>
+          <input required name="nombre" class="field" placeholder="Nombre y apellido">
+        </div>
+        <div>
+          <label class="block text-xs font-medium mb-1.5">Teléfono / WhatsApp *</label>
+          <input required name="telefono" type="tel" class="field" placeholder="300 000 0000">
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">Correo electrónico</label>
+        <input name="correo" type="email" class="field" placeholder="tucorreo@ejemplo.com">
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">Dirección de entrega *</label>
+        <input required name="direccion" class="field" placeholder="Calle, número, barrio, apto/casa">
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium mb-1.5">Ciudad *</label>
+          <input required name="ciudad" class="field" placeholder="Bogotá">
+        </div>
+        <div>
+          <label class="block text-xs font-medium mb-1.5">Departamento *</label>
+          <input required name="departamento" class="field" placeholder="Cundinamarca">
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium mb-1.5">Notas para la entrega (opcional)</label>
+        <textarea name="notas" rows="2" class="field" placeholder="Punto de referencia, horario, etc."></textarea>
+      </div>
+
+      <h2 class="display text-xl mb-1 pt-4">Forma de pago</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <label class="pay-option active">
+          <input type="radio" name="pago" value="wompi" checked class="mr-2">
+          <span class="font-medium text-sm">Pagar en línea</span>
+          <p class="text-xs text-black/55 mt-1">Tarjeta, PSE, Nequi o Bancolombia con Wompi</p>
+        </label>
+        <label class="pay-option">
+          <input type="radio" name="pago" value="whatsapp" class="mr-2">
+          <span class="font-medium text-sm">Coordinar por WhatsApp</span>
+          <p class="text-xs text-black/55 mt-1">Contraentrega en Bogotá o transferencia Nequi/Daviplata</p>
+        </label>
+      </div>
+
+      <button type="submit" id="submit-btn" class="btn-dark rounded-full px-8 py-4 text-sm uppercase tracking-wide w-full mt-4">Confirmar pedido</button>
+      <p class="text-xs text-black/45 text-center">Al confirmar, también recibiremos tu pedido por WhatsApp como respaldo.</p>
+    </form>
+  </div>
+</main>
+
+<footer class="px-6 py-10 bg-[var(--crema)] border-t border-black/5 text-center text-xs text-black/50">
+  <p>© 2026 Lanela Shop. Todos los derechos reservados.</p>
+</footer>
+
+<!-- Formulario oculto para Wompi Web Checkout -->
+<form id="wompi-form" action="https://checkout.wompi.co/p/" method="GET" class="hidden">
+  <input type="hidden" name="public-key" value="pub_test_X0zDA9xoKdePzhd8a0x9HAez7HgGO2fH" />
+  <input type="hidden" name="currency" value="COP" />
+  <input type="hidden" name="amount-in-cents" id="wompi-amount" value="" />
+  <input type="hidden" name="reference" id="wompi-reference" value="" />
+  <input type="hidden" name="signature:integrity" id="wompi-signature" value="" />
+  <input type="hidden" name="redirect-url" id="wompi-redirect" value="" />
+  <input type="hidden" name="customer-data:email" id="wompi-email" value="" />
+  <input type="hidden" name="customer-data:full-name" id="wompi-name" value="" />
+  <input type="hidden" name="shipping-address:address-line-1" id="wompi-address" value="" />
+  <input type="hidden" name="shipping-address:country" value="CO" />
+  <input type="hidden" name="shipping-address:phone-number" id="wompi-phone" value="" />
+  <input type="hidden" name="shipping-address:city" id="wompi-city" value="" />
+  <input type="hidden" name="shipping-address:region" id="wompi-region" value="" />
+</form>
+
+<script>
+const WHATSAPP_NUMBER = '573123634109';
+
+function renderSummary(){
+  const cart = getCart();
+  if (cart.length === 0){
+    document.getElementById('checkout-content').classList.add('hidden');
+    document.getElementById('empty-state').classList.remove('hidden');
+    return;
+  }
+  const wrap = document.getElementById('order-summary');
+  wrap.innerHTML = `
+    <h2 class="display text-lg mb-4">Resumen del pedido</h2>
+    ${cart.map(item => `
+      <div class="flex justify-between text-sm py-2 border-b border-black/5">
+        <span>${item.qty} × ${item.name} <span class="text-black/50">(${item.color}, ${item.size})</span></span>
+        <span class="price">${formatCOP(item.price * item.qty)}</span>
+      </div>
+    `).join('')}
+    <div class="flex justify-between pt-4 font-medium">
+      <span>Total</span>
+      <span class="price">${formatCOP(getCartTotal())}</span>
+    </div>
+  `;
+}
+
+function buildOrderText(data){
+  const cart = getCart();
+  const items = cart.map(i => `• ${i.qty} x ${i.name} — ${i.color}, talla ${i.size} — ${formatCOP(i.price * i.qty)}`).join('\n');
+  return `Hola, quiero confirmar mi pedido en Lanela Shop:\n\n${items}\n\nTotal: ${formatCOP(getCartTotal())}\n\nDatos de envío:\nNombre: ${data.nombre}\nTeléfono: ${data.telefono}\nDirección: ${data.direccion}\nCiudad: ${data.ciudad}, ${data.departamento}\nNotas: ${data.notas || '—'}\n\nForma de pago: ${data.pago === 'wompi' ? 'Pago en línea (Wompi)' : 'Contraentrega / Nequi / Daviplata'}`;
+}
+
+document.querySelectorAll('.pay-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('active'));
+    opt.classList.add('active');
+  });
+});
+
+document.getElementById('shipping-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const submitBtn = document.getElementById('submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Procesando...';
+
+  const fd = new FormData(e.target);
+  const data = Object.fromEntries(fd.entries());
+
+  // Guardamos el pedido localmente (referencia para la dueña de la tienda)
+  const orderRef = 'LAN-' + Date.now();
+  localStorage.setItem('lanela_last_order', JSON.stringify({ ref: orderRef, data, cart: getCart(), total: getCartTotal() }));
+
+  // Siempre abrimos WhatsApp con el pedido completo como respaldo, sin importar el método de pago
+  const msg = encodeURIComponent(buildOrderText(data));
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
+
+  if (data.pago === 'wompi'){
+    try {
+      // La firma de integridad debe generarse en un backend/función serverless
+      // (nunca en el navegador) para no exponer el secreto de Wompi.
+      // Ver /netlify/functions/wompi-signature.js incluido en este paquete.
+      const amountInCents = getCartTotal() * 100;
+      const res = await fetch('/.netlify/functions/wompi-signature', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reference: orderRef, amountInCents, currency: 'COP' })
+      });
+      if (!res.ok) throw new Error('Función de firma no disponible todavía');
+      const { signature } = await res.json();
+
+      document.getElementById('wompi-amount').value = amountInCents;
+      document.getElementById('wompi-reference').value = orderRef;
+      document.getElementById('wompi-signature').value = signature;
+      document.getElementById('wompi-redirect').value = window.location.origin + window.location.pathname.replace('checkout.html','gracias.html');
+      document.getElementById('wompi-email').value = data.correo || '';
+      document.getElementById('wompi-name').value = data.nombre;
+      document.getElementById('wompi-address').value = data.direccion;
+      document.getElementById('wompi-phone').value = data.telefono;
+      document.getElementById('wompi-city').value = data.ciudad;
+      document.getElementById('wompi-region').value = data.departamento;
+      document.getElementById('wompi-form').submit();
+      return;
+    } catch (err){
+      // Wompi todavía no está conectado (falta la función serverless o las llaves reales).
+      // El pedido ya se envió por WhatsApp, así que igual queda registrado.
+      alert('El pago en línea todavía no está activo en esta tienda. Tu pedido ya se envió por WhatsApp para coordinar el pago.');
+    }
+  }
+
+  clearCart();
+  window.location.href = 'gracias.html?metodo=whatsapp';
+});
+
+document.addEventListener('DOMContentLoaded', renderSummary);
+</script>
+
+</body>
+</html>

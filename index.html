@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lanela Shop — Viste tu mejor versión</title>
+<script src="cart.js" defer></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white:#FFFFFF; --ivory:#FCFAF7; --beige:#D8B8C3; --gray:#FCFAF7;
+    --black:#373330; --rose:#F7ECEF; --burgundy:#D8B8C3; --price:#8B6F63;
+    --crema:#F5F0EA; --taupe:#AE9D8D; --mocha:#8B6F63; --terracota:#B77B6C;
+  }
+  html{ scroll-behavior:smooth; }
+  body{ background:var(--ivory); color:var(--black); font-family:'Inter',sans-serif; }
+  .display{ font-family:'Playfair Display', serif; }
+  .btn-dark{ background:var(--mocha); color:#fff; transition:transform .2s ease, background .2s ease, opacity .2s ease; }
+  .btn-dark:hover{ transform:translateY(-2px); background:var(--taupe); }
+  .btn-outline{ border:1px solid var(--burgundy); color:var(--mocha); transition:background .2s ease, color .2s ease; }
+  .btn-outline:hover{ background:var(--burgundy); color:var(--black); }
+  .price{ color:var(--price); font-weight:500; }
+  .swatch{ width:16px; height:16px; border-radius:9999px; border:1px solid rgba(0,0,0,.15); cursor:pointer; }
+  .swatch.active{ outline:2px solid var(--mocha); outline-offset:2px; }
+  .card-img{ transition:opacity .5s ease; }
+  .product-card{ background:var(--ivory); border-radius:1rem; padding:.75rem; box-shadow:0 6px 20px -14px rgba(139,111,99,.25); transition:box-shadow .3s ease, transform .3s ease; }
+  .product-card:hover{ box-shadow:0 10px 26px -12px rgba(139,111,99,.3); transform:translateY(-3px); }
+  .eyebrow{ display:inline-block; padding-bottom:8px; border-bottom:1px solid var(--beige); }
+  .badge-new{ background:var(--beige); color:#fff; }
+  .badge-sale{ background:var(--terracota); color:#fff; }
+  .fade-up{ opacity:0; transform:translateY(16px); animation:fadeUp .7s ease forwards; }
+  @keyframes fadeUp{ to{ opacity:1; transform:translateY(0); } }
+  .d1{animation-delay:.1s;} .d2{animation-delay:.2s;} .d3{animation-delay:.3s;} .d4{animation-delay:.4s;}
+  @media (prefers-reduced-motion:reduce){ *{ animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+  input:focus, textarea:focus, button:focus-visible, a:focus-visible{ outline:2px solid var(--mocha); outline-offset:2px; }
+  .slide{ transition:opacity .8s ease; }
+  ::-webkit-scrollbar{ width:8px; } ::-webkit-scrollbar-thumb{ background:var(--beige); border-radius:9999px; }
+</style>
+
+</head>
+<body class="antialiased">
+
+<!-- PROMO BAR -->
+<div class="bg-[var(--crema)] text-[var(--mocha)] text-xs tracking-wide font-medium">
+  <div class="h-9 flex items-center justify-center px-4 text-center overflow-hidden">
+    <span id="promo-text">Envíos a todo Colombia</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<header class="sticky top-0 z-50 bg-[var(--ivory)]/95 backdrop-blur border-b border-black/5">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="h-20 flex items-center justify-between">
+      <button id="menu-btn" class="md:hidden" aria-label="Abrir menú">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <a href="#top" class="mx-auto md:mx-0">
+        <img src="images/logo.png" alt="Lanela Shop" class="h-8 w-auto">
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-[13px] tracking-wide uppercase">
+        <a href="#coleccion" class="hover:text-[var(--burgundy)] transition-colors">Nuevos ingresos</a>
+        <a href="#categorias" class="hover:text-[var(--burgundy)] transition-colors">Blusas</a>
+        <a href="#categorias" class="hover:text-[var(--burgundy)] transition-colors">Bodys</a>
+        <a href="#coleccion" class="hover:text-[var(--burgundy)] transition-colors">Más vendidos</a>
+        <a href="#mayoristas" class="hover:text-[var(--burgundy)] transition-colors">Mayoristas</a>
+        <a href="#marca" class="hover:text-[var(--burgundy)] transition-colors">Nuestra historia</a>
+      </nav>
+      <div class="flex items-center gap-4">
+        <button aria-label="Buscar" class="hidden sm:block"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button>
+        <button aria-label="Cuenta" class="hidden sm:block"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 5-6 8-6s6.2 2 8 6"/></svg></button>
+        <a href="carrito.html" aria-label="Carrito" class="relative inline-block">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6l-1-3H2"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-[var(--burgundy)] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        </a>
+      </div>
+    </div>
+    <nav id="mobile-nav" class="hidden md:hidden pb-5 flex flex-col gap-4 text-sm uppercase tracking-wide">
+      <a href="#coleccion">Nuevos ingresos</a>
+      <a href="#categorias">Blusas</a>
+      <a href="#categorias">Bodys</a>
+      <a href="#coleccion">Más vendidos</a>
+      <a href="#mayoristas">Mayoristas</a>
+      <a href="#marca">Nuestra historia</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="top" class="relative h-[88vh] min-h-[560px] overflow-hidden">
+  <img src="images/hero-1.jpg" class="absolute inset-0 w-full h-full object-cover">
+  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+  <div class="relative h-full max-w-7xl mx-auto px-6 flex items-end pb-20">
+    <div class="text-white max-w-lg fade-up">
+      <p class="uppercase tracking-[0.25em] text-xs mb-4">Colección esencial</p>
+      <h1 class="display text-5xl md:text-6xl leading-tight mb-4">Viste tu mejor versión</h1>
+      <p class="text-white/85 mb-8 max-w-md">Prendas básicas premium diseñadas para acompañarte todos los días con comodidad, elegancia y estilo.</p>
+      <div class="flex flex-wrap gap-3">
+        <a href="#coleccion" class="btn-dark rounded-full px-7 py-3.5 text-sm tracking-wide">Comprar colección</a>
+        <a href="#mayoristas" class="rounded-full px-7 py-3.5 text-sm tracking-wide border border-[var(--burgundy)] text-[var(--burgundy)] bg-white/10 backdrop-blur-sm hover:bg-[var(--burgundy)] hover:text-white transition-colors">Ver mayoristas</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFICIOS -->
+<section class="px-6 py-14 bg-gradient-to-b from-[var(--ivory)] to-[var(--crema)]">
+  <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div class="fade-up">
+      <svg class="mx-auto mb-3" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--burgundy)" stroke-width="1.5"><path d="M3 7h13v10H3z"/><path d="M16 10h3l2 3v4h-5"/><circle cx="7" cy="19" r="1.5"/><circle cx="18" cy="19" r="1.5"/></svg>
+      <p class="text-sm font-medium mb-1">Envíos nacionales</p>
+      <p class="text-xs text-black/55">Enviamos a toda Colombia</p>
+    </div>
+    <div class="fade-up d1">
+      <svg class="mx-auto mb-3" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--burgundy)" stroke-width="1.5"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg>
+      <p class="text-sm font-medium mb-1">Calidad que se siente</p>
+      <p class="text-xs text-black/55">Polilicra doble tela</p>
+    </div>
+    <div class="fade-up d2">
+      <svg class="mx-auto mb-3" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--burgundy)" stroke-width="1.5"><path d="M12 22s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 11c0 5.5-8 11-8 11z"/></svg>
+      <p class="text-sm font-medium mb-1">Compra segura</p>
+      <p class="text-xs text-black/55">Atención personalizada</p>
+    </div>
+    <div class="fade-up d3">
+      <svg class="mx-auto mb-3" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--burgundy)" stroke-width="1.5"><path d="M3 21h18M6 21V9l6-4 6 4v12"/><path d="M10 21v-6h4v6"/></svg>
+      <p class="text-sm font-medium mb-1">Precios mayoristas</p>
+      <p class="text-xs text-black/55">Para tiendas y emprendimientos</p>
+    </div>
+  </div>
+</section>
+
+<!-- COLECCIÓN DESTACADA -->
+<section id="coleccion" class="px-6 py-24">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center max-w-lg mx-auto mb-10 fade-up">
+      <p class="eyebrow uppercase tracking-[0.25em] text-xs text-[var(--burgundy)] mb-3">Colección</p>
+      <h2 class="display text-4xl mb-3">Las que todas quieren</h2>
+      <p class="text-black/60 text-sm">Los diseños favoritos de nuestras clientas.</p>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-3 mb-12 text-xs uppercase tracking-wide">
+      <button class="filter-btn btn-dark rounded-full px-5 py-2" data-filter="todos">Todos</button>
+      <button class="filter-btn btn-outline rounded-full px-5 py-2" data-filter="blusas">Blusas y busos</button>
+      <button class="filter-btn btn-outline rounded-full px-5 py-2" data-filter="bodys">Bodys</button>
+    </div>
+
+    <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12">
+      <article class="product product-card fade-up" data-cat="blusas" data-id="crop-top" data-name="Crop Top" data-price="35000">
+        <a href="producto.html?id=crop-top" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/crop-top-negro.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/crop-top-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Crop Top</p>
+          <p class="text-sm price mb-2">$ 35.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/crop-top-negro.jpg"></span>
+            <span class="swatch" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/crop-top-blanco.jpg"></span>
+            <span class="swatch" style="background:#6F4E37" title="Café" data-name="Café" data-img="images/crop-top-cafe.jpg"></span>
+            <span class="swatch" style="background:#EDE6DA" title="Marfil" data-name="Marfil" data-img="images/crop-top-marfil.jpg"></span>
+            <span class="swatch" style="background:#6E2439" title="Vinotinto" data-name="Vinotinto" data-img="images/crop-top-vinotinto.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d1" data-cat="blusas" data-id="buso-tortuga" data-name="Buso Tortuga" data-price="40000">
+        <a href="producto.html?id=buso-tortuga" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/buso-tortuga-blanco.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/buso-tortuga-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Buso Tortuga</p>
+          <p class="text-sm price mb-2">$ 40.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/buso-tortuga-blanco.jpg"></span>
+            <span class="swatch" style="background:#6F4E37" title="Café" data-name="Café" data-img="images/buso-tortuga-cafe.jpg"></span>
+            <span class="swatch" style="background:#EDE6DA" title="Marfil" data-name="Marfil" data-img="images/buso-tortuga-marfil.jpg"></span>
+            <span class="swatch" style="background:#AFC9E0" title="Azul bebé" data-name="Azul bebé" data-img="images/buso-tortuga-azul-bebe.jpg"></span>
+            <span class="swatch" style="background:#6E2439" title="Vinotinto" data-name="Vinotinto" data-img="images/buso-tortuga-vinotinto.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d2" data-cat="blusas" data-id="buso-sol" data-name="Buso Sol" data-price="40000">
+        <a href="producto.html?id=buso-sol" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/buso-sol-negro.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/buso-sol-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Buso Sol</p>
+          <p class="text-sm price mb-2">$ 40.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/buso-sol-negro.jpg"></span>
+            <span class="swatch" style="background:#EDE6DA" title="Marfil" data-name="Marfil" data-img="images/buso-sol-marfil.jpg"></span>
+            <span class="swatch" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/buso-sol-blanco.jpg"></span>
+            <span class="swatch" style="background:#E9E2D8" title="Beige" data-name="Beige" data-img="images/buso-sol-beige.jpg"></span>
+            <span class="swatch" style="background:#2E8B67" title="Esmeralda" data-name="Esmeralda" data-img="images/buso-sol-esmeralda.jpg"></span>
+            <span class="swatch" style="background:#6F4E37" title="Café" data-name="Café" data-img="images/buso-sol-cafe.jpg"></span>
+            <span class="swatch" style="background:#E7A9BC" title="Rosado" data-name="Rosado" data-img="images/buso-sol-rosado.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d3" data-cat="blusas" data-id="blusa-luz" data-name="Blusa Luz" data-price="35000">
+        <a href="producto.html?id=blusa-luz" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/blusa-luz-marfil.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/blusa-luz-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Blusa Luz</p>
+          <p class="text-sm price mb-2">$ 35.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#EDE6DA" title="Marfil" data-name="Marfil" data-img="images/blusa-luz-marfil.jpg"></span>
+            <span class="swatch" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/blusa-luz-negro.jpg"></span>
+            <span class="swatch" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/blusa-luz-blanco.jpg"></span>
+            <span class="swatch" style="background:#6F4E37" title="Café" data-name="Café" data-img="images/blusa-luz-cafe.jpg"></span>
+            <span class="swatch" style="background:#E9E2D8" title="Beige" data-name="Beige" data-img="images/blusa-luz-beige.jpg"></span>
+            <span class="swatch" style="background:#2E8B67" title="Esmeralda" data-name="Esmeralda" data-img="images/blusa-luz-esmeralda.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up" data-cat="blusas" data-id="blusa-asimetrica" data-name="Blusa Asimétrica" data-price="40000">
+        <a href="producto.html?id=blusa-asimetrica" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/blusa-asimetrica-amarillo.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/blusa-asimetrica-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Blusa Asimétrica</p>
+          <p class="text-sm price mb-2">$ 40.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#E8C547" title="Amarillo" data-name="Amarillo" data-img="images/blusa-asimetrica-amarillo.jpg"></span>
+            <span class="swatch" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/blusa-asimetrica-negro.jpg"></span>
+            <span class="swatch" style="background:#2E8B67" title="Verde esmeralda" data-name="Verde esmeralda" data-img="images/blusa-asimetrica-verde-esmeralda.jpg"></span>
+            <span class="swatch" style="background:#1F5C63" title="Azul petróleo" data-name="Azul petróleo" data-img="images/blusa-asimetrica-azul-petroleo.jpg"></span>
+            <span class="swatch" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/blusa-asimetrica-blanco.jpg"></span>
+            <span class="swatch" style="background:#7B4B32" title="Cocoa" data-name="Cocoa" data-img="images/blusa-asimetrica-cocoa.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d1" data-cat="blusas" data-id="rib-benji" data-name="Rib Benji" data-price="40000">
+        <a href="producto.html?id=rib-benji" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/rib-benji-lila.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/rib-benji-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Rib Benji</p>
+          <p class="text-sm price mb-2">$ 40.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#C9B6DE" title="Lila" data-name="Lila" data-img="images/rib-benji-lila.jpg"></span>
+            <span class="swatch" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/rib-benji-blanco.jpg"></span>
+            <span class="swatch" style="background:#A9A17E" title="Caqui" data-name="Caqui" data-img="images/rib-benji-caqui.jpg"></span>
+            <span class="swatch" style="background:#3E6B99" title="Azul" data-name="Azul" data-img="images/rib-benji-azul.jpg"></span>
+            <span class="swatch" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/rib-benji-negro.jpg"></span>
+            <span class="swatch" style="background:#E7A9BC" title="Rosada" data-name="Rosada" data-img="images/rib-benji-rosada.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d2" data-cat="blusas" data-id="rib-frida" data-name="Rib Frida" data-price="40000">
+        <a href="producto.html?id=rib-frida" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/rib-frida-lila.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/rib-frida-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Rib Frida</p>
+          <p class="text-sm price mb-2">$ 40.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#C9B6DE" title="Lila" data-name="Lila" data-img="images/rib-frida-lila.jpg"></span>
+            <span class="swatch" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/rib-frida-blanco.jpg"></span>
+            <span class="swatch" style="background:#A9A17E" title="Caqui" data-name="Caqui" data-img="images/rib-frida-caqui.jpg"></span>
+            <span class="swatch" style="background:#3E6B99" title="Azul" data-name="Azul" data-img="images/rib-frida-azul.jpg"></span>
+            <span class="swatch" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/rib-frida-negro.jpg"></span>
+            <span class="swatch" style="background:#E7A9BC" title="Rosada" data-name="Rosada" data-img="images/rib-frida-rosada.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d3" data-cat="blusas" data-id="blusa-rib" data-name="Blusa Rib" data-price="35000">
+        <a href="producto.html?id=blusa-rib" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/blusa-rib-lila.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/blusa-rib-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Blusa Rib</p>
+          <p class="text-sm price mb-2">$ 35.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#C9B6DE" title="Lila" data-name="Lila" data-img="images/blusa-rib-lila.jpg"></span>
+            <span class="swatch" style="background:#5B6B3B" title="Verde militar" data-name="Verde militar" data-img="images/blusa-rib-verde-militar.jpg"></span>
+            <span class="swatch" style="background:#E8C547" title="Amarillo" data-name="Amarillo" data-img="images/blusa-rib-amarillo.jpg"></span>
+            <span class="swatch" style="background:#3E6B99" title="Azul" data-name="Azul" data-img="images/blusa-rib-azul.jpg"></span>
+            <span class="swatch" style="background:#A9A17E" title="Caqui" data-name="Caqui" data-img="images/blusa-rib-caqui.jpg"></span>
+            <span class="swatch" style="background:#E7A9BC" title="Rosada" data-name="Rosada" data-img="images/blusa-rib-rosada.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up" data-cat="blusas" data-id="rib-polo" data-name="Rib Polo" data-price="40000">
+        <a href="producto.html?id=rib-polo" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/rib-polo-negro.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/rib-polo-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Rib Polo</p>
+          <p class="text-sm price mb-2">$ 40.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/rib-polo-negro.jpg"></span>
+            <span class="swatch" style="background:#A67B5B" title="Café claro" data-name="Café claro" data-img="images/rib-polo-cafe-claro.jpg"></span>
+            <span class="swatch" style="background:#4A2E1F" title="Café oscuro" data-name="Café oscuro" data-img="images/rib-polo-cafe-oscuro.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d1" data-cat="blusas" data-id="blusa-malla" data-name="Blusa Malla" data-price="30000">
+        <a href="producto.html?id=blusa-malla" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/blusa-malla-blanco.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/blusa-malla-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Blusa Malla</p>
+          <p class="text-sm price mb-2">$ 30.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/blusa-malla-blanco.jpg"></span>
+            <span class="swatch" style="background:#E9E2D8" title="Beige" data-name="Beige" data-img="images/blusa-malla-beige.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d2" data-cat="bodys" data-id="body-flor" data-name="Body Flor" data-price="55000">
+        <a href="producto.html?id=body-flor" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/body-flor-blanco.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/body-flor-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Body Flor</p>
+          <p class="text-sm price mb-2">$ 55.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/body-flor-blanco.jpg"></span>
+            <span class="swatch" style="background:#2E8B67" title="Esmeralda" data-name="Esmeralda" data-img="images/body-flor-esmeralda.jpg"></span>
+            <span class="swatch" style="background:#E7A9BC" title="Rosado" data-name="Rosado" data-img="images/body-flor-rosado.jpg"></span>
+            <span class="swatch" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/body-flor-negro.jpg"></span>
+            <span class="swatch" style="background:#E8C547" title="Amarillo" data-name="Amarillo" data-img="images/body-flor-amarillo.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d3" data-cat="bodys" data-id="body-francia" data-name="Body Francia" data-price="55000">
+        <a href="producto.html?id=body-francia" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/body-francia-cafe.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/body-francia-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Body Francia</p>
+          <p class="text-sm price mb-2">$ 55.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#6F4E37" title="Café" data-name="Café" data-img="images/body-francia-cafe.jpg"></span>
+            <span class="swatch" style="background:#E7A9BC" title="Rosado" data-name="Rosado" data-img="images/body-francia-rosado.jpg"></span>
+            <span class="swatch" style="background:#E9E2D8" title="Beige" data-name="Beige" data-img="images/body-francia-beige.jpg"></span>
+            <span class="swatch" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/body-francia-blanco.jpg"></span>
+            <span class="swatch" style="background:#2E8B67" title="Esmeralda" data-name="Esmeralda" data-img="images/body-francia-esmeralda.jpg"></span>
+            <span class="swatch" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/body-francia-negro.jpg"></span>
+            <span class="swatch" style="background:#E8C547" title="Amarillo" data-name="Amarillo" data-img="images/body-francia-amarillo.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up" data-cat="bodys" data-id="body-lupe" data-name="Body Lupe" data-price="55000">
+        <a href="producto.html?id=body-lupe" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/body-lupe-cafe.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/body-lupe-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Body Lupe</p>
+          <p class="text-sm price mb-2">$ 55.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#6F4E37" title="Café" data-name="Café" data-img="images/body-lupe-cafe.jpg"></span>
+            <span class="swatch" style="background:#22405E" title="Azul oscuro" data-name="Azul oscuro" data-img="images/body-lupe-azul-oscuro.jpg"></span>
+            <span class="swatch" style="background:#1B1B1B" title="Negro" data-name="Negro" data-img="images/body-lupe-negro.jpg"></span>
+            <span class="swatch" style="background:#E8C547" title="Amarillo" data-name="Amarillo" data-img="images/body-lupe-amarillo.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d1" data-cat="bodys" data-id="body-canelo" data-name="Body Canelo" data-price="55000">
+        <a href="producto.html?id=body-canelo" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/body-canelo-esmeralda.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/body-canelo-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Body Canelo</p>
+          <p class="text-sm price mb-2">$ 55.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#2E8B67" title="Esmeralda" data-name="Esmeralda" data-img="images/body-canelo-esmeralda.jpg"></span>
+            <span class="swatch" style="background:#B23B3B" title="Rojo" data-name="Rojo" data-img="images/body-canelo-rojo.jpg"></span>
+            <span class="swatch" style="background:#E8C547" title="Amarillo" data-name="Amarillo" data-img="images/body-canelo-amarillo.jpg"></span>
+            <span class="swatch" style="background:#EDE6DA" title="Marfil" data-name="Marfil" data-img="images/body-canelo-marfil.jpg"></span>
+            <span class="swatch" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/body-canelo-blanco.jpg"></span>
+            <span class="swatch" style="background:#7B4B32" title="Cocoa" data-name="Cocoa" data-img="images/body-canelo-cocoa.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d2" data-cat="bodys" data-id="body-luna" data-name="Body Luna" data-price="55000">
+        <a href="producto.html?id=body-luna" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/body-luna-cafe.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/body-luna-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Body Luna</p>
+          <p class="text-sm price mb-2">$ 55.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#6F4E37" title="Café" data-name="Café" data-img="images/body-luna-cafe.jpg"></span>
+            <span class="swatch" style="background:#E7A9BC" title="Rosado" data-name="Rosado" data-img="images/body-luna-rosado.jpg"></span>
+            <span class="swatch" style="background:#E9E2D8" title="Beige" data-name="Beige" data-img="images/body-luna-beige.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+
+      <article class="product product-card fade-up d3" data-cat="bodys" data-id="body-andrea" data-name="Body Andrea" data-price="50000">
+        <a href="producto.html?id=body-andrea" class="block">
+        <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-[var(--gray)] group">
+          <img src="images/body-andrea-beige.jpg" class="card-img card-img-main absolute inset-0 w-full h-full object-cover">
+          <img src="images/body-andrea-2.jpg" class="card-img card-img-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100">
+        </div>
+        </a>
+        <div class="mt-4">
+          <p class="text-sm font-medium">Body Andrea</p>
+          <p class="text-sm price mb-2">$ 50.000</p>
+          <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+            <span class="swatch active" style="background:#E9E2D8" title="Beige" data-name="Beige" data-img="images/body-andrea-beige.jpg"></span>
+            <span class="swatch" style="background:#E7A9BC" title="Rosado" data-name="Rosado" data-img="images/body-andrea-rosado.jpg"></span>
+            <span class="swatch" style="background:#FFFFFF" title="Blanco" data-name="Blanco" data-img="images/body-andrea-blanco.jpg"></span>
+          </div>
+          <div class="flex gap-2 mb-3 text-[11px] uppercase">
+            <button type="button" class="size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5" data-size="SM">SM</button>
+            <button type="button" class="size-btn border border-black/20 rounded px-2 py-0.5" data-size="LXL">LXL</button>
+          </div>
+          <button type="button" class="add-cart w-full btn-outline text-xs uppercase tracking-wide rounded-full py-2.5">Agregar al carrito</button>
+        </div>
+      </article>
+        <div class="text-center mt-14">
+      <a href="#" class="btn-outline rounded-full px-8 py-3 text-xs uppercase tracking-wide">Ver toda la colección</a>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORÍAS EDITORIAL -->
+<section id="categorias" class="px-6 pb-24">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-4">
+    <a href="#" class="relative aspect-[3/4] rounded-lg overflow-hidden group">
+      <img src="images/blusa-asimetrica-1.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent"></div>
+      <div class="absolute bottom-6 left-6 text-white">
+        <h3 class="display text-2xl mb-1">Blusas</h3>
+        <p class="text-sm text-white/85 mb-3">Diseños versátiles para elevar cualquier look.</p>
+        <span class="text-xs uppercase tracking-wide border-b border-white/70 pb-0.5">Descubrir blusas</span>
+      </div>
+    </a>
+    <a href="#" class="relative aspect-[3/4] rounded-lg overflow-hidden group">
+      <img src="images/body-francia-1.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent"></div>
+      <div class="absolute bottom-6 left-6 text-white">
+        <h3 class="display text-2xl mb-1">Bodys</h3>
+        <p class="text-sm text-white/85 mb-3">El básico que estiliza y combina con todo.</p>
+        <span class="text-xs uppercase tracking-wide border-b border-white/70 pb-0.5">Descubrir bodys</span>
+      </div>
+    </a>
+    <a href="#mayoristas" class="relative aspect-[3/4] rounded-lg overflow-hidden group">
+      <img src="images/rib-benji-1.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent"></div>
+      <div class="absolute bottom-6 left-6 text-white">
+        <h3 class="display text-2xl mb-1">Mayoristas</h3>
+        <p class="text-sm text-white/85 mb-3">Prendas de alta rotación para hacer crecer tu negocio.</p>
+        <span class="text-xs uppercase tracking-wide border-b border-white/70 pb-0.5">Comprar al por mayor</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- EDITORIAL DE MARCA -->
+<section id="marca" class="px-6 py-24 bg-[var(--crema)]">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-14 items-center">
+    <div class="rounded-lg overflow-hidden aspect-[4/5] fade-up">
+      <img src="images/marca.jpg" class="w-full h-full object-cover">
+    </div>
+    <div class="fade-up d1">
+      <p class="eyebrow uppercase tracking-[0.25em] text-xs text-[var(--burgundy)] mb-3">La marca</p>
+      <h2 class="display text-4xl mb-6 leading-tight">Más que básicos, prendas para sentirte segura</h2>
+      <p class="text-black/65 mb-4">Lanela Shop nació del nombre de Lana y Canela, mis compañeras de vida. Fabricamos prendas para acompañar a mujeres que quieren verse lindas, cómodas y seguras en cualquier momento del día.</p>
+      <p class="text-black/65">Creamos blusas y bodys femeninos, versátiles y fáciles de combinar. Diseños que puedes usar para trabajar, salir, viajar o disfrutar de un día casual, transformando cada look con pequeños detalles.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAYORISTAS -->
+<section id="mayoristas" class="px-6 py-24" style="background:var(--rose);">
+  <div class="max-w-4xl mx-auto text-center fade-up">
+    <p class="eyebrow uppercase tracking-[0.25em] text-xs text-[var(--mocha)] mb-3">Crece con Lanela</p>
+    <h2 class="display text-4xl mb-4">¿Quieres empezar o hacer crecer tu negocio de ropa?</h2>
+    <p class="text-black/70 mb-8 max-w-xl mx-auto">Compra nuestras referencias al por mayor desde 6 unds y ofrece a tus clientas prendas femeninas, versátiles y de alta rotación, con tallas SM y LXL y atención personalizada para tu pedido.</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="docs/lanela-catalogo-mayorista.pdf" target="_blank" rel="noopener" class="btn-dark rounded-full px-8 py-3.5 text-sm uppercase tracking-wide">Ver catálogo mayorista</a>
+      <a href="https://wa.me/573123634109" class="rounded-full px-8 py-3.5 text-sm uppercase tracking-wide border border-[var(--mocha)] text-[var(--mocha)] hover:bg-[var(--mocha)] hover:text-white transition-colors">Hablar con una asesora</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="px-6 py-24 bg-[var(--crema)]">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="display text-4xl text-center mb-14 fade-up">Ellas ya visten su mejor versión</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      <figure class="bg-[var(--ivory)] rounded-lg p-8 fade-up shadow-[0_8px_28px_-14px_rgba(139,111,99,.35)]">
+        <p class="text-sm text-black/75 mb-6">"La tela es gruesita, se ajusta muy lindo y no transparenta. Ya quiero pedirla en más colores."</p>
+        <figcaption class="text-sm font-medium">María P. <span class="text-black/45 font-normal">— Bogotá</span></figcaption>
+      </figure>
+      <figure class="bg-[var(--ivory)] rounded-lg p-8 fade-up d1 shadow-[0_8px_28px_-14px_rgba(139,111,99,.35)]">
+        <p class="text-sm text-black/75 mb-6">"Me encantó la calidad y la forma en que llegó empacado mi pedido."</p>
+        <figcaption class="text-sm font-medium">Daniela G. <span class="text-black/45 font-normal">— Medellín</span></figcaption>
+      </figure>
+      <figure class="bg-[var(--ivory)] rounded-lg p-8 fade-up d2 shadow-[0_8px_28px_-14px_rgba(139,111,99,.35)]">
+        <p class="text-sm text-black/75 mb-6">"Las blusas tienen muy buena rotación. Mis clientas siempre preguntan por nuevos colores."</p>
+        <figcaption class="text-sm font-medium">Valentina R. <span class="text-black/45 font-normal">— Cali, mayorista</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section class="px-6 py-24 bg-[var(--ivory)]">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10 fade-up">
+      <h2 class="display text-4xl mb-2">Así se vive Lanela</h2>
+      <p class="text-black/60 text-sm">Síguenos en @lanela_shopp para descubrir nuevos looks, lanzamientos y formas de combinar nuestras prendas.</p>
+    </div>
+    <div class="grid grid-cols-3 md:grid-cols-6 gap-2 mb-8">
+      <img src="images/ig1.jpg" class="aspect-square object-cover rounded">
+      <img src="images/ig2.jpg" class="aspect-square object-cover rounded">
+      <img src="images/ig3.jpg" class="aspect-square object-cover rounded">
+      <img src="images/ig4.jpg" class="aspect-square object-cover rounded">
+      <img src="images/ig5.jpg" class="aspect-square object-cover rounded">
+      <img src="images/ig6.jpg" class="aspect-square object-cover rounded">
+    </div>
+    <div class="text-center">
+      <a href="https://www.instagram.com/lanela_shopp" target="_blank" rel="noopener" class="btn-outline rounded-full px-8 py-3 text-xs uppercase tracking-wide">Síguenos en Instagram</a>
+    </div>
+  </div>
+</section>
+
+<!-- LLAMADO FINAL -->
+<section class="relative h-[60vh] min-h-[420px] overflow-hidden">
+  <img src="images/hero-1.jpg" class="absolute inset-0 w-full h-full object-cover">
+  <div class="absolute inset-0 bg-black/35"></div>
+  <div class="relative h-full flex flex-col items-center justify-center text-center text-white px-6">
+    <h2 class="display text-4xl md:text-5xl mb-4 max-w-xl">Tu próximo básico favorito está aquí</h2>
+    <p class="text-white/85 mb-8 max-w-md">Descubre diseños creados para hacerte sentir cómoda, femenina y segura.</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="#coleccion" class="btn-dark rounded-full px-8 py-3.5 text-sm uppercase tracking-wide">Ver colección</a>
+      <a href="https://wa.me/573123634109" class="rounded-full px-8 py-3.5 text-sm uppercase tracking-wide border border-white/70 hover:bg-white hover:text-black transition-colors">Comprar por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="px-6 py-16" style="background:var(--rose);">
+  <div class="max-w-lg mx-auto text-center fade-up">
+    <h3 class="display text-2xl mb-2 text-[var(--black)]">Sé la primera en conocer lo nuevo</h3>
+    <p class="text-sm text-black/60 mb-6">Recibe lanzamientos, promociones y novedades de Lanela Shop.</p>
+    <form id="newsletter-form" class="flex gap-2">
+      <input type="email" required placeholder="Correo electrónico" class="flex-1 border border-[var(--beige)] bg-white rounded-full px-5 py-3 text-sm">
+      <button type="submit" class="btn-dark rounded-full px-6 py-3 text-xs uppercase tracking-wide whitespace-nowrap">Quiero enterarme</button>
+    </form>
+    <p id="newsletter-status" class="text-xs text-[var(--mocha)] mt-3 hidden">¡Gracias! Ya estás suscrita.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="px-6 py-16 bg-[var(--crema)] text-[var(--black)]/80 border-t border-black/5">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-10 text-sm">
+    <div>
+      <img src="images/logo.png" alt="Lanela Shop" class="h-7 w-auto mb-3">
+      <p class="text-black/60">Moda femenina diseñada para acompañarte todos los días.<br>Viste tu mejor versión.</p>
+    </div>
+    <div>
+      <p class="text-[var(--black)] uppercase text-xs tracking-wide mb-4">Tienda</p>
+      <ul class="space-y-2 text-black/70">
+        <li><a href="#coleccion" class="hover:text-[var(--mocha)]">Nuevos ingresos</a></li>
+        <li><a href="#categorias" class="hover:text-[var(--mocha)]">Blusas</a></li>
+        <li><a href="#categorias" class="hover:text-[var(--mocha)]">Bodys</a></li>
+        <li><a href="#mayoristas" class="hover:text-[var(--mocha)]">Mayoristas</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-[var(--black)] uppercase text-xs tracking-wide mb-4">Información</p>
+      <ul class="space-y-2 text-black/70">
+        <li><a href="#" class="hover:text-[var(--mocha)]">Guía de tallas</a></li>
+        <li><a href="politicas.html#envios" class="hover:text-[var(--mocha)]">Envíos</a></li>
+        <li><a href="politicas.html#reembolso" class="hover:text-[var(--mocha)]">Cambios y garantías</a></li>
+        <li><a href="#" class="hover:text-[var(--mocha)]">Preguntas frecuentes</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-[var(--black)] uppercase text-xs tracking-wide mb-4">Contacto</p>
+      <ul class="space-y-2 text-[var(--mocha)]">
+        <li><a href="https://wa.me/573123634109" class="hover:text-[var(--black)]">WhatsApp</a></li>
+        <li><a href="https://www.instagram.com/lanela_shopp" target="_blank" rel="noopener" class="hover:text-[var(--black)]">Instagram: @lanela_shopp</a></li>
+        <li><a href="mailto:contacto.lanelashop@gmail.com" class="hover:text-[var(--black)]">contacto.lanelashop@gmail.com</a></li>
+        <li class="text-black/50">Bogotá, Colombia</li>
+      </ul>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-black/10 text-xs text-black/50 flex flex-col sm:flex-row justify-between gap-2">
+    <p>© 2026 Lanela Shop. Todos los derechos reservados.</p>
+    <p><a href="politicas.html#terminos" class="hover:text-[var(--mocha)]">Términos y condiciones</a> · <a href="politicas.html#privacidad" class="hover:text-[var(--mocha)]">Política de privacidad</a></p>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOTANTE -->
+<a href="https://wa.me/573123634109" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"
+   class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#25D366] flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.36a9.9 9.9 0 0 0 4.62 1.15h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm0 17.9h-.01a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-3.09.78.82-3.02-.19-.31a8.09 8.09 0 0 1-1.24-4.14c0-4.47 3.64-8.11 8.14-8.11 2.17 0 4.21.85 5.75 2.38a8.06 8.06 0 0 1 2.38 5.74c0 4.47-3.64 8.11-8.13 8.11zm4.47-6.07c-.24-.12-1.44-.71-1.67-.79-.22-.08-.38-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.02-.38-1.95-1.2-.72-.64-1.2-1.44-1.35-1.68-.14-.24-.02-.37.11-.5.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.8-.2-.48-.4-.42-.55-.42h-.47c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>
+</a>
+
+<script>
+  // Promo bar rotativo
+  const promoMsgs = ['Envíos a todo Colombia', 'Compra al detal y al por mayor', 'Pago seguro y atención personalizada'];
+  let promoIdx = 0;
+  setInterval(() => {
+    promoIdx = (promoIdx + 1) % promoMsgs.length;
+    document.getElementById('promo-text').textContent = promoMsgs[promoIdx];
+  }, 4000);
+
+  // Menú móvil
+  document.getElementById('menu-btn').addEventListener('click', () => {
+    document.getElementById('mobile-nav').classList.toggle('hidden');
+  });
+
+
+  // Filtro de colección
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const products = document.querySelectorAll('.product');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => { b.className = 'filter-btn btn-outline rounded-full px-5 py-2'; });
+      btn.className = 'filter-btn btn-dark rounded-full px-5 py-2';
+      const f = btn.dataset.filter;
+      products.forEach(p => {
+        const cats = p.dataset.cat.split(' ');
+        p.style.display = (f === 'todos' || cats.includes(f)) ? '' : 'none';
+      });
+    });
+  });
+
+  // Swatches, tallas y carrito real
+  document.querySelectorAll('.product').forEach(card => {
+    const mainImg = card.querySelector('.card-img-main');
+    card.querySelectorAll('.swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        card.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+        sw.classList.add('active');
+        if (mainImg && sw.dataset.img) mainImg.src = sw.dataset.img;
+      });
+    });
+    card.querySelectorAll('.size-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        card.querySelectorAll('.size-btn').forEach(b => b.className = 'size-btn border border-black/20 rounded px-2 py-0.5');
+        btn.className = 'size-btn active border border-[var(--mocha)] bg-[var(--mocha)] text-white rounded px-2 py-0.5';
+      });
+    });
+  });
+
+  // Carrito real
+  document.querySelectorAll('.add-cart').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.product');
+      const activeSwatch = card.querySelector('.swatch.active');
+      const activeSize = card.querySelector('.size-btn.active');
+      addToCart({
+        id: card.dataset.id,
+        name: card.dataset.name,
+        price: parseInt(card.dataset.price, 10),
+        color: activeSwatch ? activeSwatch.dataset.name : '',
+        size: activeSize ? activeSize.dataset.size : 'SM',
+        img: card.querySelector('.card-img-main').src
+      });
+      const original = btn.textContent;
+      btn.textContent = 'Agregado ✓';
+      setTimeout(() => { btn.textContent = original; }, 1200);
+    });
+  });
+
+
+  // Newsletter
+  document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('newsletter-status').classList.remove('hidden');
+    e.target.reset();
+  });
+</script>
+
+</body>
+</html>
